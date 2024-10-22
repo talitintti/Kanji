@@ -1,0 +1,34 @@
+#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
+
+#include <QMainWindow>
+#include <graphicsitemword.h>
+#include <wordhandler.h>
+#include <QPoint>
+#include <QRandomGenerator>
+
+QT_BEGIN_NAMESPACE
+namespace Ui {
+class MainWindow;
+}
+QT_END_NAMESPACE
+
+class MainWindow : public QMainWindow
+{
+    Q_OBJECT
+
+public:
+    MainWindow(QWidget *parent = nullptr);
+    ~MainWindow();
+
+private:
+    Ui::MainWindow *ui;
+    WordHandler word_handler;
+    QGraphicsScene* graphics_scene;
+    QList<QSharedPointer<GraphicsItemWord>> graphics_items;
+
+    void CreateGraphicsItems();
+    void DrawMaster(size_t item_amount);
+    QPoint DrawNext(QHash<Word*, bool>& is_drawn_already, Word* word, size_t number_to_draw, QPoint currentpos);
+};
+#endif // MAINWINDOW_H
