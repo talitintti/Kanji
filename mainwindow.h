@@ -2,10 +2,10 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <graphicsitemword.h>
-#include <wordhandler.h>
 #include <QPoint>
 #include <QRandomGenerator>
+#include <graphicsitemword.h>
+#include <wordhandler.h>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -24,11 +24,14 @@ public:
 private:
     Ui::MainWindow *ui;
     WordHandler word_handler;
-    QGraphicsScene* graphics_scene;
+    QGraphicsScene *graphics_scene;
     QList<QSharedPointer<GraphicsItemWord>> graphics_items;
 
     void CreateGraphicsItems();
     void DrawMaster(size_t item_amount);
-    QPoint DrawNext(QHash<Word*, bool>& is_drawn_already, Word* word, size_t number_to_draw, QPoint currentpos);
+    QPoint DrawNext(QHash<Word *, bool> &is_drawn_already,
+                    Word *word,
+                    size_t number_to_draw,
+                    QPoint currentpos);
 };
 #endif // MAINWINDOW_H

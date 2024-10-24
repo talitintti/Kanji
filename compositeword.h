@@ -10,13 +10,12 @@ class CompositeWord : public Word
 {
 public:
     using Word::Word;
-    void setKanji(Kanji* kanji);
+    void setKanji(Kanji *kanji);
     QString getCharacters() const;
-    QList<Kanji*> getRelated() const ;
+    QList<Kanji *> getRelated() const;
     //QList<Word*> getRelatedWords() const override;
 private:
-    QList<Kanji*> related_kanji;
-
+    QList<Kanji *> related_kanji;
 };
 
 #endif // COMPOSITEWORD_H

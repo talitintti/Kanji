@@ -1,16 +1,18 @@
 #include "compositeword.h"
 
-
-QString CompositeWord::getCharacters() const {
+QString CompositeWord::getCharacters() const
+{
     return Word::getCharacters();
 }
 
-void CompositeWord::setKanji(Kanji *kanji) {
+void CompositeWord::setKanji(Kanji *kanji)
+{
     this->related_kanji.append(kanji);
 }
 
-QList<Kanji*> CompositeWord::getRelated() const {
-    QList<Kanji*> list(this->related_kanji);
+QList<Kanji *> CompositeWord::getRelated() const
+{
+    QList<Kanji *> list(this->related_kanji);
     return list;
 }
 

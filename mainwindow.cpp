@@ -1,32 +1,40 @@
 #include "mainwindow.h"
+#include "compositeword.h"
 #include "ui_mainwindow.h"
 #include "word.h"
-#include "compositeword.h"
 #include "wordhandler.h"
+#include <QMessageBox>
 
 
 // Checks the kanji according to the values on thisthis site
 // http://www.rikai.com/library/kanjitables/kanji_codes.unicode.shtml
 // hex value range [4e00, 9faf]
-bool isKanji(QChar character) {
+bool isKanji(QChar character)
+{
     if (19968 < character.unicode() && character.unicode() < 40879) {
         return true;
     }
     return false;
 }
 
-static QPoint Nextpos(QPoint currentPoint, int random_degree) {
-    //const quint32 rand_value = QRandomGenerator::global()->generateDouble();
-    //const quint32 random_degree = rand_value % 360;
-    const double y = qSin(random_degree);
-    const double x = qCos(random_degree);
+static QPoint Nextpos(QPoint currentPoint)
+{
+    const quint32 length_from_last_point = 10;
+    const quint32 rand_value = QRandomGenerator::global()->generate();
+    const quint32 degrees = rand_value % 360;
 
-    QPoint newpos(currentPoint.x() + x, currentPoint.y() + y);
+    const double in_radians = qDegreesToRadians(degrees);
+    const double y = qSin(in_radians) * length_from_last_point;
+    const double x = qCos(in_radians) * length_from_last_point;
 
-    return newpos;
+    return QPoint(currentPoint.x() + x, currentPoint.y() + y);
 }
 
-QPoint MainWindow::DrawNext(QHash<Word*, bool>& is_drawn_already, Word* word, size_t number_to_draw, QPoint currentpos) {
+QPoint MainWindow::DrawNext(QHash<Word *, bool> &is_drawn_already,
+                            Word *word,
+                            size_t number_to_draw,
+                            QPoint currentpos)
+{
     if (is_drawn_already.size() == number_to_draw) {
         return currentpos;
     }
@@ -55,16 +63,15 @@ QPoint MainWindow::DrawNext(QHash<Word*, bool>& is_drawn_already, Word* word, si
     //        next_pos = calcunextpos(nextpoint)
     //        drawLine(currentpoint,nextpoint)
     //        DrawNext(composite, next_pos)
-
 }
 
+void MainWindow::DrawMaster(size_t item_amount)
+{
+    QList<Word *> unified_list(word_handler.getAllWords());
 
-void MainWindow::DrawMaster(size_t item_amount) {
-    QList<Word*> unified_list(word_handler.getAllWords());
+    QHash<Word *, bool> is_drawn_already;
 
-    QHash<Word*, bool> is_drawn_already;
-
-    Word* first_item = unified_list.first();
+    Word *first_item = unified_list.first();
 
     QListIterator iter(unified_list);
     //QPoint curr_point =
@@ -72,7 +79,6 @@ void MainWindow::DrawMaster(size_t item_amount) {
         //curr_point = DrawNext(is_drawn_already, first_item, item_amount);
     }
 }
-
 
 //void MainWindow::CreateGraphicsItems() {
 //    for (Kanji* kanji : word_handler.getKanjiPointers()) {
@@ -84,7 +90,6 @@ void MainWindow::DrawMaster(size_t item_amount) {
 //    }
 //}
 
-
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -94,22 +99,20 @@ MainWindow::MainWindow(QWidget *parent)
     graphics_scene = new QGraphicsScene();
     ui->graphicsView->setScene(graphics_scene);
 
-    size_t item_amount = word_handler.getCompositeStorageSize() + word_handler.getKanjiStorageSize();
-    word_handler =  WordHandler();
+    size_t item_amount = word_handler.getCompositeStorageSize()
+                         + word_handler.getKanjiStorageSize();
+    word_handler = WordHandler();
     graphics_items = QList<QSharedPointer<GraphicsItemWord>>();
     graphics_items.reserve(item_amount);
 
-    word_handler.ReadParse(QString("/home/momo/Desktop/core2k.txt"));
+    bool success = word_handler.ReadParse(QString("/home/momo/Desktop/core2k.txt"));
     word_handler.LinkWords();
     //CreateGraphicsItems();
     //DrawMaster(item_amount);
-    GraphicsItemWord* abc = new GraphicsItemWord(word_handler.getKanjiPointers().at(1));
-    abc->setPos(0,0);
+    GraphicsItemWord *abc = new GraphicsItemWord(word_handler.getKanjiPointers().at(1));
+    abc->setPos(0, 0);
     graphics_scene->addItem(abc);
 
-    for (int i = 0; i < 360; i++) {
-        qDebug() << Nextpos(QPoint(0,0), i) << "\n";
-    }
 }
 
 MainWindow::~MainWindow()

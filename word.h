@@ -6,7 +6,10 @@ class Word
 {
 public:
     Word(QString chars, QString reading, QString explanation, QString englishEquivalent)
-        : characters(chars), reading(reading), explanation(explanation), english_eq(englishEquivalent)
+        : characters(chars)
+        , reading(reading)
+        , explanation(explanation)
+        , english_eq(englishEquivalent)
     {}
     virtual ~Word();
     QString getCharacters() const;
