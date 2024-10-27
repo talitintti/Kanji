@@ -1,9 +1,9 @@
 #include "mainwindow.h"
-#include "compositeword.h"
 #include "ui_mainwindow.h"
 #include "word.h"
 #include "wordhandler.h"
 #include <QMessageBox>
+#include <QDebug>
 
 
 // Checks the kanji according to the values on thisthis site
@@ -30,42 +30,34 @@ static QPoint Nextpos(QPoint currentPoint)
     return QPoint(currentPoint.x() + x, currentPoint.y() + y);
 }
 
+
 QPoint MainWindow::DrawNext(QHash<Word *, bool> &is_drawn_already,
                             Word *word,
-                            size_t number_to_draw,
-                            QPoint currentpos)
+                            qsizetype number_to_draw,
+                            QPoint &currentpos)
 {
+    qDebug() << "We here";
     if (is_drawn_already.size() == number_to_draw) {
         return currentpos;
     }
 
     if (!is_drawn_already.value(word)) {
         is_drawn_already.insert(word, true);
+        GraphicsItemWord *graphics_item = new GraphicsItemWord(word);
+        graphics_item->setPos(currentpos);
+        graphics_scene->addItem(graphics_item);
+
+        QListIterator iter(word->getRelatedWords());
+        while (iter.hasNext()) {
+            QPoint nextpos = Nextpos(currentpos);
+            DrawNext(is_drawn_already, iter.next(), number_to_draw, nextpos) ;
+        }
     }
-
-    //if (composite_list.length() == 0) {
-    //    return; // when all comp words are exhausted
-    //}
-
-    //if (word)
-
-    // if (pointer == composite && isinlist) // dealing with the word list
-    //    pointer.setpos(currentpoin)
-    //    words.remove(pointer)
-
-    //    for (Kanji in comps)
-    //        next_pos = calcunextpos(nextpoint)
-    //        drawLine(currentpoint, nextpoint)
-    //        DrawNext(kanji, next_pos)
-    // if (pointer == kanji && isinlist) // dealing with Kanji
-    //        pointer.setpos(currentpoint)
-    //    for (Composite in kanji)
-    //        next_pos = calcunextpos(nextpoint)
-    //        drawLine(currentpoint,nextpoint)
-    //        DrawNext(composite, next_pos)
+    return currentpos;
 }
 
-void MainWindow::DrawMaster(size_t item_amount)
+
+void MainWindow::DrawMaster(qsizetype item_amount)
 {
     QList<Word *> unified_list(word_handler.getAllWords());
 
@@ -74,45 +66,27 @@ void MainWindow::DrawMaster(size_t item_amount)
     Word *first_item = unified_list.first();
 
     QListIterator iter(unified_list);
-    //QPoint curr_point =
+    QPoint curr_point(0,0);
     while (iter.hasNext()) {
-        //curr_point = DrawNext(is_drawn_already, first_item, item_amount);
+        curr_point = DrawNext(is_drawn_already, first_item, item_amount, curr_point);
     }
 }
-
-//void MainWindow::CreateGraphicsItems() {
-//    for (Kanji* kanji : word_handler.getKanjiPointers()) {
-//        graphics_items.append(QSharedPointer<GraphicsItemWord>::create(kanji));
-//    }
-//
-//    for (CompositeWord* comp : word_handler.getCompositePointers()) {
-//        graphics_items.append(QSharedPointer<GraphicsItemWord>::create(comp));
-//    }
-//}
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
+    qDebug() <<  "can we get here";
     ui->setupUi(this);
 
-    graphics_scene = new QGraphicsScene();
-    ui->graphicsView->setScene(graphics_scene);
-
-    size_t item_amount = word_handler.getCompositeStorageSize()
-                         + word_handler.getKanjiStorageSize();
     word_handler = WordHandler();
-    graphics_items = QList<QSharedPointer<GraphicsItemWord>>();
-    graphics_items.reserve(item_amount);
-
+    graphics_scene = new QGraphicsScene();
+    qDebug() << "Hello";
+    ui->graphicsView->setScene(graphics_scene);
+    qDebug() << "Over";
     bool success = word_handler.ReadParse(QString("/home/momo/Desktop/core2k.txt"));
     word_handler.LinkWords();
-    //CreateGraphicsItems();
-    //DrawMaster(item_amount);
-    GraphicsItemWord *abc = new GraphicsItemWord(word_handler.getKanjiPointers().at(1));
-    abc->setPos(0, 0);
-    graphics_scene->addItem(abc);
-
+    //DrawMaster(word_handler.getCompositeStorageSize() + word_handler.getKanjiStorageSize());
 }
 
 MainWindow::~MainWindow()

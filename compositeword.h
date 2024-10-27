@@ -13,7 +13,7 @@ public:
     void setKanji(Kanji *kanji);
     QString getCharacters() const;
     QList<Kanji *> getRelated() const;
-    //QList<Word*> getRelatedWords() const override;
+    QList<Word*> getRelatedWords() const override;
 private:
     QList<Kanji *> related_kanji;
 };

@@ -25,13 +25,13 @@ private:
     Ui::MainWindow *ui;
     WordHandler word_handler;
     QGraphicsScene *graphics_scene;
-    QList<QSharedPointer<GraphicsItemWord>> graphics_items;
+    //QList<QSharedPointer<GraphicsItemWord>> graphics_items;
 
     void CreateGraphicsItems();
-    void DrawMaster(size_t item_amount);
+    void DrawMaster(qsizetype item_amount);
     QPoint DrawNext(QHash<Word *, bool> &is_drawn_already,
                     Word *word,
-                    size_t number_to_draw,
-                    QPoint currentpos);
+                    qsizetype number_to_draw,
+                    QPoint &currentpos);
 };
 #endif // MAINWINDOW_H

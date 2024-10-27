@@ -16,7 +16,7 @@ public:
     QString getReading() const;
     QString getExplanation() const;
     QString getEnglishEquivalent() const;
-    //virtual QList<Word*> getRelatedWords() const;
+    virtual QList<Word*> getRelatedWords() const = 0;
 
 private:
     QString characters;

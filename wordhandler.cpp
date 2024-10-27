@@ -126,7 +126,7 @@ void WordHandler::LinkWords()
             = c_word->getCharacters(); // apparently needed to not detach QString when iterating below
         for (auto const &current_char : c_word_const) {
             Kanji *corresponding_kanji = this->kanji_map.value(current_char);
-            if (isKanji(current_char) & corresponding_kanji != NULL) {
+            if (isKanji(current_char) && corresponding_kanji != NULL) {
                 corresponding_kanji->setAppearsIn(c_word);
                 c_word->setKanji(corresponding_kanji);
             }
@@ -134,11 +134,11 @@ void WordHandler::LinkWords()
     }
 }
 
-size_t WordHandler::getKanjiStorageSize()
+qsizetype WordHandler::getKanjiStorageSize()
 {
     return this->kanji_storage.size();
 }
-size_t WordHandler::getCompositeStorageSize()
+qsizetype WordHandler::getCompositeStorageSize()
 {
     return this->composite_storage.size();
 }

@@ -34,8 +34,8 @@ public:
 
     QList<Kanji *> getKanjiPointers();
     QList<CompositeWord *> getCompositePointers();
-    size_t getKanjiStorageSize();
-    size_t getCompositeStorageSize();
+    qsizetype getKanjiStorageSize();
+    qsizetype getCompositeStorageSize();
     QList<Word *> getAllWords() const;
 
 private:
