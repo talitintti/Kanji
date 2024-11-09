@@ -6,6 +6,7 @@
 #include <QRandomGenerator>
 #include <graphicsitemword.h>
 #include <wordhandler.h>
+#include <nextpos.h>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -24,6 +25,7 @@ public:
 private:
     Ui::MainWindow *ui;
     WordHandler word_handler;
+    NextPos nextpos;
     QGraphicsScene *graphics_scene;
     //QList<QSharedPointer<GraphicsItemWord>> graphics_items;
 
@@ -33,5 +35,6 @@ private:
                     Word *word,
                     qsizetype number_to_draw,
                     QPoint &currentpos);
+
 };
 #endif // MAINWINDOW_H

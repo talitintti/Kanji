@@ -10,7 +10,7 @@ void GraphicsItemWord::paint(QPainter *painter,
                              QWidget *widget)
 {
     //painter->setBrush(Qt::gray);
-    painter->drawRect(boundingRect());
+    //painter->drawRect(boundingRect());
 
     painter->setPen(Qt::white);
     painter->drawText(boundingRect(), Qt::AlignCenter, data->getCharacters());

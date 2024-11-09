@@ -15,6 +15,7 @@ SOURCES += \
     kanji.cpp \
     main.cpp \
     mainwindow.cpp \
+    nextpos.cpp \
     word.cpp \
     wordhandler.cpp
 
@@ -24,6 +25,7 @@ HEADERS += \
     kana.h \
     kanji.h \
     mainwindow.h \
+    nextpos.h \
     word.h \
     wordhandler.h
 
