@@ -61,7 +61,9 @@ QList<QString> WordHandler::ProcessLine(QString line)
     }
 
     if (word_data.length() != 4) {
-        qDebug() << "[NOTICE: line was broken into not four parts]" << "\n" << line << "\n";
+        qDebug() << "[NOTICE: line was broken into not four parts]"
+                 << "\n"
+                 << line << "\n";
     }
 
     return word_data;
@@ -148,6 +150,10 @@ QList<Word *> WordHandler::getAllWords() const
     QList<Word *> list;
     for (Kanji *kanji : this->kanji_storage) {
         Word *word = static_cast<Word *>(kanji);
+        list.append(word);
+    }
+    for (CompositeWord *c_word : this->composite_storage) {
+        Word *word = static_cast<Word *>(c_word);
         list.append(word);
     }
     return list;

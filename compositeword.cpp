@@ -17,10 +17,11 @@ QList<Kanji *> CompositeWord::getRelated() const
     return list;
 }
 
-QList<Word*> CompositeWord::getRelatedWords() const {
-    QList<Word*> list;
-    for (Kanji* kanji : this->related_kanji) {
-        Word* word = static_cast<Word*>(kanji);
+QList<Word *> CompositeWord::getRelatedWords() const
+{
+    QList<Word *> list;
+    for (Kanji *kanji : this->related_kanji) {
+        Word *word = static_cast<Word *>(kanji);
         list.append(word);
     }
     return list;

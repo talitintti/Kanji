@@ -1,35 +1,48 @@
 #include "nextpos.h"
+#include <QPoint>
 #include <QtMath>
 #include <QtNumeric>
-#include <QPoint>
+#include <QDebug>
 
-double NextPos::GetRadiansPerDivision(quint32 multiplier, quint32 number_of_divisions) {
-    return ((2*M_PI)*multiplier) / number_of_divisions;
+void NextPos::PrintState() {
+    qDebug() << "angle " << current_angle;
+    qDebug() << "radius " << current_radius;
+    qDebug() << "item counter " << item_counter_per_circle;
+    qDebug() << "item amount " << item_amount;
+    qDebug() << "\n";
 }
 
-
-
-QPoint NextPos::CalcNext(QPoint center, double radius, double radians)
+double NextPos::DivisionLength(quint32 number_of_divisions, double radius)
 {
+    return ((2 * M_PI) * radius) / number_of_divisions;
+}
+
+QPoint NextPos::CalcNext(QPoint center, double radius, double degrees)
+{
+    const double radians = qDegreesToRadians(degrees);
     const double y = qSin(radians) * radius;
     const double x = qCos(radians) * radius;
 
     return QPoint(center.x() + x, center.y() + y);
 }
 
+QPoint NextPos::Get()
+{
+    if ((item_counter_per_circle % item_amount) == 0) {
+        current_angle = 0;
+        item_counter_per_circle = 0;
+        current_radius = radius * radius_mult;
+        item_amount = qFloor((2 * M_PI * current_radius) / step_length_on_circle);
+        radius_mult++;
+    } else {
+        current_angle += 360 / item_amount;
+    }
+    item_counter_per_circle++;
+    iterations++;
 
-QPoint NextPos::Get() {
-        if ((item_counter_per_circle % item_amount) == 0) {
-            item_counter_per_circle = 0;
-            item_amount = qFloor( ((2*M_PI)*current_radius) / (original_radian_step*radius) ) ;
-            current_radians = 0;
-            current_radius = radius * radius_mult;
-            radius_mult++;
-        }
-        else {
-            current_radians += GetRadiansPerDivision(radius_mult, item_amount);
-        }
-        item_counter_per_circle++;
+    return CalcNext(center, current_radius, current_angle);
+}
 
-        return CalcNext(center, current_radius, current_radians);
+quint32 NextPos::GetIterations() {
+    return iterations;
 }

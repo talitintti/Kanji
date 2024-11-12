@@ -1,38 +1,44 @@
 #ifndef NEXTPOS_H
 #define NEXTPOS_H
-#include <QtNumeric>
 #include <QPoint>
+#include <QtNumeric>
 
 class NextPos
 {
 public:
-    NextPos() :
-        radius(20),
-        starting_amount(4),
-        original_radian_step(GetRadiansPerDivision(1, starting_amount)),
-        radius_mult(1),
-        item_amount(4),
-        current_radius(radius),
-        current_radians(0),
-        item_counter_per_circle(0),
-        center(QPoint(0,0))
+    NextPos()
+        : radius(45)
+        , starting_amount(4)
+        , radius_mult(1)
+        , item_amount(starting_amount)
+        , current_radius(radius)
+        , step_length_on_circle(DivisionLength(starting_amount, radius))
+        , current_angle(0)
+        , item_counter_per_circle(0)
+        , center(QPoint(0, 0))
+        , iterations(0)
     {}
     QPoint Get();
+    quint32 GetIterations();
+
 private:
     const double radius;
     const quint32 starting_amount;
-    const double original_radian_step;
+    const double step_length_on_circle;
+
+    quint32 iterations;
 
     double radius_mult;
     quint32 item_amount;
     double current_radius;
-    double current_radians;
+    double current_angle;
     quint32 item_counter_per_circle;
 
     QPoint center;
 
-    double GetRadiansPerDivision(quint32 multiplier, quint32 number_of_divisions);
-    QPoint CalcNext(QPoint center, double radius, double radians);
+    double DivisionLength(quint32 number_of_divisions, double radius);
+    QPoint CalcNext(QPoint center, double radius, double degrees);
+    void  PrintState();
 };
 
 #endif // NEXTPOS_H

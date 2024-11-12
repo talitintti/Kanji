@@ -1,7 +1,7 @@
 #ifndef KANJI_H
 #define KANJI_H
-#include <word.h>
 #include <compositeword.h>
+#include <word.h>
 
 class Kanji : public Word
 {
@@ -11,7 +11,8 @@ public:
     QString getCharacters() const;
     void setAppearsIn(CompositeWord *composite_word);
     QList<CompositeWord *> getRelated() const;
-    QList<Word*> getRelatedWords() const override;
+    QList<Word *> getRelatedWords() const override;
+
 private:
     QList<CompositeWord *> appears_in;
 };

@@ -5,8 +5,8 @@
 #include <QPoint>
 #include <QRandomGenerator>
 #include <graphicsitemword.h>
-#include <wordhandler.h>
 #include <nextpos.h>
+#include <wordhandler.h>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -30,11 +30,10 @@ private:
     //QList<QSharedPointer<GraphicsItemWord>> graphics_items;
 
     void CreateGraphicsItems();
-    void DrawMaster(qsizetype item_amount);
-    QPoint DrawNext(QHash<Word *, bool> &is_drawn_already,
+    void DrawMaster(QList<Word*> &unified_list);
+    bool DrawNext(QHash<Word *, bool> &is_drawn_already,
                     Word *word,
-                    qsizetype number_to_draw,
-                    QPoint &currentpos);
-
+                    qsizetype number_to_draw
+                    );
 };
 #endif // MAINWINDOW_H

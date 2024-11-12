@@ -1,11 +1,9 @@
 #include "mainwindow.h"
+#include <QDebug>
+#include <QMessageBox>
 #include "ui_mainwindow.h"
 #include "word.h"
 #include "wordhandler.h"
-#include <QMessageBox>
-#include <QDebug>
-
-
 
 // Checks the kanji according to the values on thisthis site
 // http://www.rikai.com/library/kanjitables/kanji_codes.unicode.shtml
@@ -18,58 +16,54 @@ bool isKanji(QChar character)
     return false;
 }
 
-
-
-
-
-QPoint MainWindow::DrawNext(QHash<Word *, bool> &is_drawn_already,
+// Returns true if there are stil items to draw.
+// Returns false if the given item is drawn already or if we have drawn the given amount already
+bool MainWindow::DrawNext(QHash<Word *, bool> &is_drawn_already,
                             Word *word,
-                            qsizetype number_to_draw,
-                            QPoint &currentpos)
+                            qsizetype number_to_draw
+                            )
 {
-    if (is_drawn_already.size() == number_to_draw) {
-        return currentpos;
+    if ((is_drawn_already.size() == number_to_draw) ) {
+        return false;
     }
 
-    if (!is_drawn_already.contains(word)) {
-        is_drawn_already.insert(word, true);
-        GraphicsItemWord *graphics_item = new GraphicsItemWord(word);
-        graphics_item->setPos(currentpos);
-        graphics_scene->addItem(graphics_item);
-
-        QListIterator iter(word->getRelatedWords());
-        while (iter.hasNext()) {
-            QPoint next_pos = nextpos.Get();
-            DrawNext(is_drawn_already, iter.next(), number_to_draw, next_pos);
-        }
+    if ( is_drawn_already.contains(word)) {
+        return true;
     }
-    return currentpos;
+
+    QPoint next_pos = nextpos.Get();
+    is_drawn_already.insert(word, true);
+    GraphicsItemWord *graphics_item = new GraphicsItemWord(word);
+    graphics_item->setPos(next_pos);
+    graphics_scene->addItem(graphics_item);
+
+    QListIterator iter(word->getRelatedWords());
+    while (iter.hasNext()) {
+        DrawNext(is_drawn_already, iter.next(), number_to_draw);
+    }
+
+    return true;
 }
 
-
-void MainWindow::DrawMaster(qsizetype item_amount)
+void MainWindow::DrawMaster(QList<Word*> & unified_list)
 {
-    QList<Word *> unified_list(word_handler.getAllWords());
-
+    qsizetype list_size = unified_list.size() ;
     QHash<Word *, bool> is_drawn_already;
-
-
     QListIterator iter(unified_list);
-    QPoint curr_point(0,0);
-    //while (iter.hasNext()) {
-    //    Word *next_word = iter.next();
-    //    if (is_drawn_already.contains(next_word)) {
-    //        continue;
-    //    }
-    //    curr_point = DrawNext(is_drawn_already, next_word, item_amount, curr_point);
-    //}
-    for (int i = 0; i <= 0; i++) {
-        Word *next_word = unified_list.at(i);
-        if (is_drawn_already.contains(next_word)) {
-            continue;
+
+    while (iter.hasNext()) {
+        Word *next_word = iter.next();
+        if (!DrawNext(is_drawn_already, next_word, list_size)) {
+            break;
         }
-        curr_point = DrawNext(is_drawn_already, next_word, item_amount, curr_point);
     }
+    //for (int i = 0; i <= 20; i++) {
+    //    Word *next_word = unified_list.at(i);
+    //    QPoint curr_point = nextpos.Get();
+    //    if (!DrawNext(is_drawn_already, next_word, item_amount, curr_point)) {
+    //        break;
+    //    }
+    //}
 }
 
 MainWindow::MainWindow(QWidget *parent)
@@ -83,7 +77,11 @@ MainWindow::MainWindow(QWidget *parent)
     ui->graphicsView->setScene(graphics_scene);
     bool success = word_handler.ReadParse(QString("/home/momo/Desktop/core2k.txt"));
     word_handler.LinkWords();
-    DrawMaster(word_handler.getCompositeStorageSize() + word_handler.getKanjiStorageSize());
+
+    QList<Word *> unified_list(word_handler.getAllWords());
+    DrawMaster(unified_list);
+    qDebug() << nextpos.GetIterations();
+    qDebug() << unified_list.size();
 }
 
 MainWindow::~MainWindow()
