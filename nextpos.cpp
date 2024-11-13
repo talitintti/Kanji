@@ -35,7 +35,7 @@ QPoint NextPos::Get()
         item_amount = qFloor((2 * M_PI * current_radius) / step_length_on_circle);
         radius_mult++;
     } else {
-        current_angle += 360 / item_amount;
+        current_angle += 360 / (double)item_amount;
     }
     item_counter_per_circle++;
     iterations++;

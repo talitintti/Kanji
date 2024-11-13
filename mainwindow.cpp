@@ -17,7 +17,7 @@ bool isKanji(QChar character)
 }
 
 // Returns true if there are stil items to draw.
-// Returns false if the given item is drawn already or if we have drawn the given amount already
+// Returns false if we have drawn the given amount already
 bool MainWindow::DrawNext(QHash<Word *, bool> &is_drawn_already,
                             Word *word,
                             qsizetype number_to_draw
@@ -27,7 +27,7 @@ bool MainWindow::DrawNext(QHash<Word *, bool> &is_drawn_already,
         return false;
     }
 
-    if ( is_drawn_already.contains(word)) {
+    if (is_drawn_already.contains(word)) {
         return true;
     }
 
