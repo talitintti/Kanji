@@ -16,11 +16,36 @@ bool isKanji(QChar character)
     return false;
 }
 
+
+void MainWindow::DrawWord(QPoint pos, Word* word, QHash<Word *, bool> &is_drawn_already) {
+    is_drawn_already.insert(word, true);
+    GraphicsItemWord *graphics_item = new GraphicsItemWord(word);
+    graphics_item->setPos(pos);
+
+    graphics_scene->addItem(graphics_item);
+}
+
+void MainWindow::DrawLine(QPoint pos1, QPoint pos2) {
+    QGraphicsLineItem *lineItem = new QGraphicsLineItem(pos1.x(),
+                                                        pos1.y(),
+                                                        pos2.x(),
+                                                        pos2.y());
+
+    QPen pen;
+    pen.setColor(Qt::white);
+    pen.setWidth(2);
+    lineItem->setPen(pen);
+
+    graphics_scene->addItem(lineItem);
+}
+
 // Returns true if there are stil items to draw.
 // Returns false if we have drawn the given amount already
 bool MainWindow::DrawNext(QHash<Word *, bool> &is_drawn_already,
                             Word *word,
-                            qsizetype number_to_draw
+                            qsizetype number_to_draw,
+                            QPoint last_point,
+                            bool no_relation
                             )
 {
     if ((is_drawn_already.size() == number_to_draw) ) {
@@ -31,15 +56,16 @@ bool MainWindow::DrawNext(QHash<Word *, bool> &is_drawn_already,
         return true;
     }
 
-    QPoint next_pos = nextpos.Get();
-    is_drawn_already.insert(word, true);
-    GraphicsItemWord *graphics_item = new GraphicsItemWord(word);
-    graphics_item->setPos(next_pos);
-    graphics_scene->addItem(graphics_item);
+    QPoint current_point = nextpos.Get();
+
+    DrawWord(current_point, word, is_drawn_already);
+    if (!no_relation) {
+        DrawLine(last_point, current_point);
+    }
 
     QListIterator iter(word->getRelatedWords());
     while (iter.hasNext()) {
-        DrawNext(is_drawn_already, iter.next(), number_to_draw);
+        DrawNext(is_drawn_already, iter.next(), number_to_draw, current_point, false);
     }
 
     return true;
@@ -53,17 +79,10 @@ void MainWindow::DrawMaster(QList<Word*> & unified_list)
 
     while (iter.hasNext()) {
         Word *next_word = iter.next();
-        if (!DrawNext(is_drawn_already, next_word, list_size)) {
+        if (!DrawNext(is_drawn_already, next_word, list_size, nextpos.GetWithoutRotation(), true)) {
             break;
         }
     }
-    //for (int i = 0; i <= 20; i++) {
-    //    Word *next_word = unified_list.at(i);
-    //    QPoint curr_point = nextpos.Get();
-    //    if (!DrawNext(is_drawn_already, next_word, item_amount, curr_point)) {
-    //        break;
-    //    }
-    //}
 }
 
 MainWindow::MainWindow(QWidget *parent)

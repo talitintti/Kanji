@@ -46,3 +46,11 @@ QPoint NextPos::Get()
 quint32 NextPos::GetIterations() {
     return iterations;
 }
+
+QPoint NextPos::GetWithoutRotation() {
+    if (iterations == 0) {
+        return Get();
+    }
+
+    return CalcNext(center, current_radius, current_angle);
+}

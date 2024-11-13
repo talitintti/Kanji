@@ -19,6 +19,7 @@ public:
         , iterations(0)
     {}
     QPoint Get();
+    QPoint GetWithoutRotation();
     quint32 GetIterations();
 
 private:

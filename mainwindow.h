@@ -33,7 +33,12 @@ private:
     void DrawMaster(QList<Word*> &unified_list);
     bool DrawNext(QHash<Word *, bool> &is_drawn_already,
                     Word *word,
-                    qsizetype number_to_draw
+                    qsizetype number_to_draw,
+                    QPoint last_point,
+                    bool no_relation
                     );
+
+    void DrawLine(QPoint pos1, QPoint pos2);
+    void DrawWord(QPoint pos, Word* word, QHash<Word*, bool> &is_drawn_already);
 };
 #endif // MAINWINDOW_H
