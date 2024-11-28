@@ -32,8 +32,8 @@ void MainWindow::DrawLine(QPoint pos1, QPoint pos2) {
                                                         pos2.y());
 
     QPen pen;
-    pen.setColor(Qt::white);
-    pen.setWidth(2);
+    pen.setColor(Qt::black);
+    pen.setWidth(1);
     lineItem->setPen(pen);
 
     graphics_scene->addItem(lineItem);

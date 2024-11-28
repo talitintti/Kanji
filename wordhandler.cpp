@@ -12,6 +12,20 @@ static bool isKanji(QChar character)
     return false;
 }
 
+static bool isHiragana(QChar character) {
+    if (12352 < character.unicode() && character.unicode() < 12447) {
+        return true;
+    }
+    return false;
+}
+
+static bool isKatakana(QChar character) {
+    if (12448 < character.unicode() && character.unicode() < 12543) {
+        return true;
+    }
+    return false;
+}
+
 WordHandler::WordHandler() {}
 
 WordHandler::~WordHandler()
@@ -148,12 +162,12 @@ qsizetype WordHandler::getCompositeStorageSize()
 QList<Word *> WordHandler::getAllWords() const
 {
     QList<Word *> list;
-    for (Kanji *kanji : this->kanji_storage) {
-        Word *word = static_cast<Word *>(kanji);
-        list.append(word);
-    }
     for (CompositeWord *c_word : this->composite_storage) {
         Word *word = static_cast<Word *>(c_word);
+        list.append(word);
+    }
+    for (Kanji *kanji : this->kanji_storage) {
+        Word *word = static_cast<Word *>(kanji);
         list.append(word);
     }
     return list;

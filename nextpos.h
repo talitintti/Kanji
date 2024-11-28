@@ -7,7 +7,7 @@ class NextPos
 {
 public:
     NextPos()
-        : radius(45)
+        : radius(50)
         , starting_amount(4)
         , radius_mult(1)
         , item_amount(starting_amount)

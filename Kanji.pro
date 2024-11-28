@@ -11,7 +11,6 @@ CONFIG += c++17
 SOURCES += \
     compositeword.cpp \
     graphicsitemword.cpp \
-    kana.cpp \
     kanji.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -22,7 +21,6 @@ SOURCES += \
 HEADERS += \
     compositeword.h \
     graphicsitemword.h \
-    kana.h \
     kanji.h \
     mainwindow.h \
     nextpos.h \

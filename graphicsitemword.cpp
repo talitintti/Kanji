@@ -1,4 +1,5 @@
 #include "graphicsitemword.h"
+#include <QApplication>
 
 QRectF GraphicsItemWord::boundingRect() const
 {
@@ -13,5 +14,14 @@ void GraphicsItemWord::paint(QPainter *painter,
     //painter->drawRect(boundingRect());
 
     painter->setPen(Qt::white);
-    painter->drawText(boundingRect(), Qt::AlignCenter, data->getCharacters());
+
+    QString word_text = data->getCharacters();
+    QFont current_font = QApplication::font();
+    QFontMetrics fm(current_font);
+    QRect bounding_rect(fm.boundingRect(word_text));
+    bounding_rect.adjust(-5,-5, 5, 5);
+
+    painter->drawText(bounding_rect, Qt::AlignCenter, word_text);
+    painter->drawEllipse(bounding_rect);
+
 }
