@@ -135,6 +135,7 @@ void WordHandler::AddComposite(const QString &chars,
 }
 
 // Links the compositeword to know the pointers of its constituent kanji and kanji to know where it appears
+// if a kanji in word is not a kanji card in deck we create a remnant kanji which is used for searching later
 void WordHandler::LinkWords()
 {
     for (CompositeWord *c_word : this->composite_storage) {
@@ -145,6 +146,12 @@ void WordHandler::LinkWords()
             if (isKanji(current_char) && corresponding_kanji != NULL) {
                 corresponding_kanji->setAppearsIn(c_word);
                 c_word->setKanji(corresponding_kanji);
+            }
+            else if (isKanji(current_char)){
+                Kanji *remnant = new Kanji(current_char, "", "", "");
+                remnants.append(remnant);
+                remnant->setAppearsIn(c_word);
+                c_word->setKanji(remnant);
             }
         }
     }
