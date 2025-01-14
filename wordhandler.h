@@ -37,6 +37,7 @@ public:
     qsizetype getKanjiStorageSize();
     qsizetype getCompositeStorageSize();
     QList<Word *> getAllWords() const;
+    QList<Word *> GetFirstOrderRelated(QString search_key);
 
 private:
     QList<QString> ProcessLine(QString line);
@@ -44,6 +45,9 @@ private:
     QList<Kanji *> kanji_storage;
     QList<CompositeWord *> composite_storage;
     QHash<QString, Kanji *> kanji_map;
+    QHash<QString, Kanji *> remnant_map;
+
+    QList<Word *> GetRelated(Word *kanji);
 };
 
 #endif // WORDHANDLER_H

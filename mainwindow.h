@@ -22,15 +22,21 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+private slots:
+    void on_lineEdit_textEdited(const QString &arg1);
+
 private:
     Ui::MainWindow *ui;
     WordHandler word_handler;
     NextPos nextpos;
-    QGraphicsScene *graphics_scene;
     //QList<QSharedPointer<GraphicsItemWord>> graphics_items;
 
+    QGraphicsScene *graphics_scene_all;
+    QGraphicsScene *graphics_scene_search;
+
     void CreateGraphicsItems();
-    void DrawMaster(QList<Word*> &unified_list);
+    void DrawAll(QList<Word*> &unified_list);
+    void DrawSearched();
     bool DrawNext(QHash<Word *, bool> &is_drawn_already,
                     Word *word,
                     qsizetype number_to_draw,

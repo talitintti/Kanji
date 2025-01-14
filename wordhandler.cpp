@@ -148,8 +148,11 @@ void WordHandler::LinkWords()
                 c_word->setKanji(corresponding_kanji);
             }
             else if (isKanji(current_char)){
-                Kanji *remnant = new Kanji(current_char, "", "", "");
-                remnants.append(remnant);
+                Kanji *remnant = this->remnant_map.value(current_char);
+                if (remnant == NULL) { // when two composit words dont have the same remnant
+                    remnant = new Kanji(current_char, "", "", "");
+                    remnant_map.value(current_char, remnant);
+                }
                 remnant->setAppearsIn(c_word);
                 c_word->setKanji(remnant);
             }
@@ -178,4 +181,39 @@ QList<Word *> WordHandler::getAllWords() const
         list.append(word);
     }
     return list;
+}
+
+// Searches if there is a kanji that corresponds to search_key.
+// If not empty list is give
+// If yes the Kanji and it's first order related words are returned
+QList<Word *> WordHandler::GetFirstOrderRelated(QString search_key) {
+
+    Kanji *primary_kanji = this->kanji_map.value(search_key);
+    Word *word = static_cast<Word *>(primary_kanji);
+    if (primary_kanji != NULL) {
+        auto related = GetRelated(word);
+        related.push_front(word);
+
+        return related;
+    }
+
+    primary_kanji = this->remnant_map.value(search_key);
+    word = static_cast<Word *>(primary_kanji);
+    if (word != NULL) {
+        auto related = GetRelated(word);
+        related.push_front(word);
+
+        return related;
+    }
+
+    QList<Word *> returnables;
+    return returnables;
+}
+
+QList<Word *> WordHandler::GetRelated(Word *kanji) {
+    QList<Word *> related;
+    for (Word *c_word : kanji->getRelatedWords()) {
+        related.append(c_word);
+    }
+    return related;
 }

@@ -1,6 +1,8 @@
 #include "mainwindow.h"
 #include <QDebug>
 #include <QMessageBox>
+#include <QStackedWidget>
+#include <QGraphicsView>
 #include "ui_mainwindow.h"
 #include "word.h"
 #include "wordhandler.h"
@@ -22,7 +24,7 @@ void MainWindow::DrawWord(QPoint pos, Word* word, QHash<Word *, bool> &is_drawn_
     GraphicsItemWord *graphics_item = new GraphicsItemWord(word);
     graphics_item->setPos(pos);
 
-    graphics_scene->addItem(graphics_item);
+    graphics_scene_all->addItem(graphics_item);
 }
 
 void MainWindow::DrawLine(QPoint pos1, QPoint pos2) {
@@ -36,7 +38,7 @@ void MainWindow::DrawLine(QPoint pos1, QPoint pos2) {
     pen.setWidth(1);
     lineItem->setPen(pen);
 
-    graphics_scene->addItem(lineItem);
+    graphics_scene_all->addItem(lineItem);
 }
 
 // Returns true if there are stil items to draw.
@@ -71,7 +73,7 @@ bool MainWindow::DrawNext(QHash<Word *, bool> &is_drawn_already,
     return true;
 }
 
-void MainWindow::DrawMaster(QList<Word*> & unified_list)
+void MainWindow::DrawAll(QList<Word*> & unified_list)
 {
     qsizetype list_size = unified_list.size() ;
     QHash<Word *, bool> is_drawn_already;
@@ -91,19 +93,43 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
+    graphics_scene_all = new QGraphicsScene();
+    graphics_scene_search = new QGraphicsScene();
+    QGraphicsView *view_all = new QGraphicsView();
+    QGraphicsView *view_search = new QGraphicsView();
+
+    ui->stackedWidget->addWidget(view_all);
+    ui->stackedWidget->addWidget(view_search);
+
+    view_all->setScene(graphics_scene_all);
+    view_search->setScene(graphics_scene_search);
+
     word_handler = WordHandler();
-    graphics_scene = new QGraphicsScene();
-    ui->graphicsView->setScene(graphics_scene);
     bool success = word_handler.ReadParse(QString("/home/momo/Desktop/core2k.txt"));
     word_handler.LinkWords();
 
     QList<Word *> unified_list(word_handler.getAllWords());
-    DrawMaster(unified_list);
-    qDebug() << nextpos.GetIterations();
-    qDebug() << unified_list.size();
+    DrawAll(unified_list);
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
 }
+
+void MainWindow::DrawSearched() {
+
+}
+
+void MainWindow::on_lineEdit_textEdited(const QString &arg1)
+{
+    if (arg1 == "") {
+        ui->stackedWidget->setCurrentIndex(0);
+    }
+    else {
+        graphics_scene_search->clear();
+        ui->stackedWidget->setCurrentIndex(1);
+        DrawSearched();
+    }
+}
+
