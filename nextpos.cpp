@@ -4,6 +4,16 @@
 #include <QtNumeric>
 #include <QDebug>
 
+void NextPos::Reset() {
+    radius_mult = 1;
+    item_amount = starting_amount;
+    current_radius = radius;
+    current_angle = 0;
+    item_counter_per_circle = 4;
+    center = QPoint(0, 0);
+    iterations = 0;
+}
+
 void NextPos::PrintState() {
     qDebug() << "angle " << current_angle;
     qDebug() << "radius " << current_radius;

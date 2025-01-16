@@ -187,10 +187,12 @@ QList<Word *> WordHandler::getAllWords() const
 // If not empty list is give
 // If yes the Kanji and it's first order related words are returned
 QList<Word *> WordHandler::GetFirstOrderRelated(QString search_key) {
-
     Kanji *primary_kanji = this->kanji_map.value(search_key);
+    auto a = kanji_map.keys();
+    qDebug() << a.at(1) << "\n";
     Word *word = static_cast<Word *>(primary_kanji);
     if (primary_kanji != NULL) {
+        qDebug() << word->getCharacters();
         auto related = GetRelated(word);
         related.push_front(word);
 
@@ -200,6 +202,7 @@ QList<Word *> WordHandler::GetFirstOrderRelated(QString search_key) {
     primary_kanji = this->remnant_map.value(search_key);
     word = static_cast<Word *>(primary_kanji);
     if (word != NULL) {
+        qDebug() << word->getCharacters();
         auto related = GetRelated(word);
         related.push_front(word);
 

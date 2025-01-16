@@ -19,15 +19,14 @@ bool isKanji(QChar character)
 }
 
 
-void MainWindow::DrawWord(QPoint pos, Word* word, QHash<Word *, bool> &is_drawn_already) {
-    is_drawn_already.insert(word, true);
+void MainWindow::DrawWord(QPoint pos, Word* word, QGraphicsScene *scene) {
     GraphicsItemWord *graphics_item = new GraphicsItemWord(word);
     graphics_item->setPos(pos);
 
-    graphics_scene_all->addItem(graphics_item);
+    scene->addItem(graphics_item);
 }
 
-void MainWindow::DrawLine(QPoint pos1, QPoint pos2) {
+void MainWindow::DrawLine(QPoint pos1, QPoint pos2, QGraphicsScene *scene) {
     QGraphicsLineItem *lineItem = new QGraphicsLineItem(pos1.x(),
                                                         pos1.y(),
                                                         pos2.x(),
@@ -38,7 +37,7 @@ void MainWindow::DrawLine(QPoint pos1, QPoint pos2) {
     pen.setWidth(1);
     lineItem->setPen(pen);
 
-    graphics_scene_all->addItem(lineItem);
+    scene->addItem(lineItem);
 }
 
 // Returns true if there are stil items to draw.
@@ -60,9 +59,11 @@ bool MainWindow::DrawNext(QHash<Word *, bool> &is_drawn_already,
 
     QPoint current_point = nextpos.Get();
 
-    DrawWord(current_point, word, is_drawn_already);
+    DrawWord(current_point, word, graphics_scene_all);
+    is_drawn_already.insert(word, true);
+
     if (!no_relation) {
-        DrawLine(last_point, current_point);
+        DrawLine(last_point, current_point, graphics_scene_all);
     }
 
     QListIterator iter(word->getRelatedWords());
@@ -110,6 +111,11 @@ MainWindow::MainWindow(QWidget *parent)
 
     QList<Word *> unified_list(word_handler.getAllWords());
     DrawAll(unified_list);
+
+    SetStyles();
+}
+
+void MainWindow::SetStyles() {
 }
 
 MainWindow::~MainWindow()
@@ -117,19 +123,30 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::DrawSearched() {
-
+void MainWindow::DrawSearched(QList<Word*> drawables) {
+    nextpos.Reset();
+    for (int i = 0; i < drawables.count(); i++) {
+        Word *word = drawables.at(i);
+        QPoint point = nextpos.Get();
+        DrawWord(point, word, graphics_scene_search);
+    }
 }
+
 
 void MainWindow::on_lineEdit_textEdited(const QString &arg1)
 {
-    if (arg1 == "") {
+    QString arg = arg1.trimmed();
+    if (arg == "") {
         ui->stackedWidget->setCurrentIndex(0);
     }
     else {
         graphics_scene_search->clear();
         ui->stackedWidget->setCurrentIndex(1);
-        DrawSearched();
+
+        QList<Word*> found = word_handler.GetFirstOrderRelated(arg);
+        qDebug() << found.count() << "\n";
+        DrawSearched(found);
+
     }
 }
 

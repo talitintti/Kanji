@@ -23,6 +23,7 @@ private:
     QString reading;
     QString explanation;
     QString english_eq;
+    QString id;
 };
 
 #endif // WORD_H

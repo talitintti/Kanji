@@ -6,7 +6,7 @@
 class NextPos
 {
 public:
-    NextPos()
+    NextPos() // if you change these note that Reset() values have to be changed also
         : radius(50)
         , starting_amount(4)
         , radius_mult(1)
@@ -21,6 +21,7 @@ public:
     QPoint Get();
     QPoint GetWithoutRotation();
     quint32 GetIterations();
+    void Reset();
 
 private:
     const double radius;
