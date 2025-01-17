@@ -8,9 +8,7 @@
 class GraphicsItemWord : public QGraphicsItem
 {
 public:
-    GraphicsItemWord(Word *data)
-        : data(data)
-    {}
+    GraphicsItemWord(Word *);
 
     QRectF boundingRect() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;

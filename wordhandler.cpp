@@ -1,5 +1,6 @@
 #include "wordhandler.h"
 #include <QDebug>
+#include <QRandomGenerator>
 
 // Checks the kanji according to the values on this site
 // http://www.rikai.com/library/kanjitables/kanji_codes.unicode.shtml
@@ -59,7 +60,7 @@ QList<CompositeWord *> WordHandler::getCompositePointers()
     return composite_storage_copy;
 }
 
-// Just hack the line into three parts based on tabs
+// Just hack the line into parts based on tabs and return all
 QList<QString> WordHandler::ProcessLine(QString line)
 {
     QList<QString> word_data;
@@ -74,8 +75,8 @@ QList<QString> WordHandler::ProcessLine(QString line)
         word_data.append(t);
     }
 
-    if (word_data.length() != 4) {
-        qDebug() << "[NOTICE: line was broken into not four parts]"
+    if (word_data.length() != 15) {
+        qDebug() << "[NOTICE: line was not broken into fifteen parts]"
                  << "\n"
                  << line << "\n";
     }
@@ -93,45 +94,62 @@ bool WordHandler::ReadParse(QString ankideck_url)
         return false;
 
     while (!file.atEnd()) {
+    //for (int i = 0; i<6; i++) {
         QString line = file.readLine();
         QList<QString> data_per_word = ProcessLine(line);
 
-        if (!data_per_word.isEmpty() && data_per_word.length() == 4) {
-            QString the_word_itself(data_per_word.at(0));
-            if (the_word_itself.length() > 1) {
-                this->AddComposite(data_per_word.at(0),
-                                   data_per_word.at(1),
-                                   data_per_word.at(2),
-                                   data_per_word.at(3));
+        if (data_per_word.length() == 15) {
+            QString id = data_per_word.at(0); //0
+            QString characters = data_per_word.at(1); // 1
+            QString reading = data_per_word.at(3); // 3
+            QString english_eq = data_per_word.at(4); // 4
+            QString explanation = data_per_word.at(6); // 6
+            QString explanation_eng = data_per_word.at(9); // 9
+
+            if (characters.length() > 1) {
+                this->AddComposite(id, characters, reading, english_eq, explanation,explanation_eng);
             } else {
-                this->AddKanji(data_per_word.at(0),
-                               data_per_word.at(1),
-                               data_per_word.at(2),
-                               data_per_word.at(3));
+                this->AddKanji(id, characters, reading, english_eq, explanation, explanation_eng);
             }
         }
     }
     return true;
 }
 
-void WordHandler::AddKanji(const QString &chars,
+void WordHandler::AddKanji(const QString &id,
+                           const QString &chars,
                            const QString &reading,
+                           const QString &english_eq,
                            const QString &explanation,
-                           const QString &englishEquivalent)
+                           const QString &explanation_eng)
 {
-    Kanji *kanji = new Kanji(chars, reading, explanation, englishEquivalent);
+    Kanji *kanji = new Kanji(id, chars, reading, english_eq, explanation, explanation_eng);
 
     this->kanji_storage.append(kanji);
     this->kanji_map.insert(chars, kanji);
 }
 
-void WordHandler::AddComposite(const QString &chars,
+void WordHandler::AddComposite(const QString &id,
+                               const QString &chars,
                                const QString &reading,
+                               const QString &english_eq,
                                const QString &explanation,
-                               const QString &englishEquivalent)
+                            const QString &explanation_eng)
 {
-    CompositeWord *composite = new CompositeWord(chars, reading, explanation, englishEquivalent);
+    CompositeWord *composite = new CompositeWord(id, chars, reading, english_eq, explanation, explanation_eng);
     this->composite_storage.append(composite);
+}
+
+// [code_point1, code_point2[
+QString random_string_ascii(quint32 start_dec, quint32 stop_dec, size_t length) {
+    QString string;
+    for (uint i = 0; i < length; i++)  {
+        quint32 random_value = QRandomGenerator::global()->generate();
+        quint32 ascii_code_point = start_dec + (random_value%stop_dec);
+        QChar new_char = QChar(ascii_code_point);
+        string.append(new_char);
+    }
+    return string;
 }
 
 // Links the compositeword to know the pointers of its constituent kanji and kanji to know where it appears
@@ -150,7 +168,8 @@ void WordHandler::LinkWords()
             else if (isKanji(current_char)){
                 Kanji *remnant = this->remnant_map.value(current_char);
                 if (remnant == NULL) { // when two composit words dont have the same remnant
-                    remnant = new Kanji(current_char, "", "", "");
+                    QString random_id = random_string_ascii(48, 127, 9);
+                    remnant = new Kanji(random_id,current_char, "", "", "", "");
                     remnant_map.value(current_char, remnant);
                 }
                 remnant->setAppearsIn(c_word);

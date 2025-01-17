@@ -106,7 +106,7 @@ MainWindow::MainWindow(QWidget *parent)
     view_search->setScene(graphics_scene_search);
 
     word_handler = WordHandler();
-    bool success = word_handler.ReadParse(QString("/home/momo/Desktop/core2k.txt"));
+    bool success = word_handler.ReadParse(QString("/home/momo/Desktop/core2k_more.txt"));
     word_handler.LinkWords();
 
     QList<Word *> unified_list(word_handler.getAllWords());

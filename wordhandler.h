@@ -21,14 +21,18 @@ public:
     WordHandler();
     ~WordHandler();
 
-    void AddKanji(const QString &chars,
-                  const QString &reading,
-                  const QString &explanation,
-                  const QString &englishEquivalent);
-    void AddComposite(const QString &chars,
-                      const QString &reading,
-                      const QString &explanation,
-                      const QString &englishEquivalent);
+    void AddKanji(const QString &id,
+                    const QString &chars,
+                    const QString &reading,
+                    const QString &english_eq,
+                    const QString &explanation,
+                    const QString &explanation_eng);
+    void AddComposite(const QString &id,
+                    const QString &chars,
+                    const QString &reading,
+                    const QString &english_eq,
+                    const QString &explanation,
+                      const QString &explanation_eng);
     void LinkWords();
     bool ReadParse(QString ankideck_url);
 

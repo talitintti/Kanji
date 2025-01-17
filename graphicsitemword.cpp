@@ -1,6 +1,10 @@
 #include "graphicsitemword.h"
 #include <QApplication>
 
+GraphicsItemWord::GraphicsItemWord(Word *word) : data(word) {
+    this->setToolTip(data->getEnglishEquivalent());
+}
+
 QRectF GraphicsItemWord::boundingRect() const
 {
     return QRectF(0, 0, 100, 50); // Define the item's bounding rectangle

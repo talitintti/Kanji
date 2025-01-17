@@ -5,11 +5,13 @@
 class Word
 {
 public:
-    Word(QString chars, QString reading, QString explanation, QString englishEquivalent)
-        : characters(chars)
+    Word(QString id, QString chars, QString reading, QString englishEquivalent, QString explanation, QString explanation_eng)
+        : id(id)
+        , characters(chars)
         , reading(reading)
-        , explanation(explanation)
         , english_eq(englishEquivalent)
+        , explanation(explanation)
+        , explanation_eng(explanation_eng)
     {}
     virtual ~Word();
     QString getCharacters() const;
@@ -19,11 +21,13 @@ public:
     virtual QList<Word *> getRelatedWords() const = 0;
 
 private:
-    QString characters;
-    QString reading;
-    QString explanation;
-    QString english_eq;
-    QString id;
+    QString id; //0
+    QString characters; // 1
+    QString reading; // 3
+    QString english_eq; // 4
+    QString explanation; // 6
+    QString explanation_eng; // 9
+
 };
 
 #endif // WORD_H
