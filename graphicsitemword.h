@@ -15,6 +15,7 @@ public:
 
 private:
     Word *data; // Pointer to the data object
+    QRect GetRectFitToText(QString text) const;
 };
 
 #endif // GRAPHICSITEMWORD_H

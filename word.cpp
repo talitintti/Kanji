@@ -16,4 +16,8 @@ QString Word::getEnglishEquivalent() const
 {
     return english_eq;
 }
+QString Word::getId() const
+{
+    return id;
+}
 Word::~Word() {}
